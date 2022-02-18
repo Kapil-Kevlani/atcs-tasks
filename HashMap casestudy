@@ -1,0 +1,81 @@
+package casestudy3;
+
+public class Product {
+	private int id;
+	private String name;
+	private int amount;
+	
+	private String addrs;
+	private int pincode;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getAmount() {
+		return amount;
+	}
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+	public String getAddrs() {
+		return addrs;
+	}
+	public void setAddrs(String addrs) {
+		this.addrs = addrs;
+	}
+	public int getPincode() {
+		return pincode;
+	}
+	public void setPincode(int pincode) {
+		this.pincode = pincode;
+	}
+
+}
+
+
+package casestudy3;
+
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class cusdetails {
+	public static void main(String[] args) {
+		Object p1,p2,p3,p4,p5;
+		Scanner sc = new Scanner(System.in);
+		Product p = new Product();
+		System.out.println("add product id");
+		p1 = sc.nextInt();
+		p.setId((Integer)p1);
+		System.out.println("add product name");
+		p2 = sc.next();
+		p.setName((String)p2);
+		System.out.println("add product amount");
+		p3 = sc.nextInt();
+		p.setAmount((Integer)p3);
+		System.out.println("add delivery address");
+		p4 = sc.next();
+		p.setAddrs((String)p4);
+		System.out.println("add pincode");
+		p5 = sc.nextInt();
+		p.setPincode((Integer)p5);
+		System.out.println("product name is: "+ p.getName());
+		HashMap<Integer, Object> hm = new HashMap();
+		hm.put(101,p1);
+		hm.put(102, p2);
+		hm.put(103, p3);
+		hm.put(104, p4);
+		hm.put(105, p5);
+		System.out.println("hashmap values are: "+hm);
+		
+		
+	}
+
+}
