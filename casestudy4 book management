@@ -1,0 +1,262 @@
+Book Class---> Entity
+==================
+package com.ac.bean;
+
+// Class Book
+
+public class Book {
+	
+	// Book Attributes
+	
+	private int bookId;
+	private String bookTitle;
+	private float bookPrice;
+	private String grade;
+	
+	// Getters and Setters 
+	
+	public int getBookId() {
+		return bookId;
+	}
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookTitle() {
+		return bookTitle;
+	}
+	public void setBookTitle(String bookTitle) {
+		this.bookTitle = bookTitle;
+	}
+	public float getBookPrice() {
+		return bookPrice;
+	}
+	public void setBookPrice(float bookPrice) {
+		this.bookPrice = bookPrice;
+	}
+	public String getGrade() {
+		return grade;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+}
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+BookService Class ---> Service
+================================
+package com.ac.service;
+
+// import packages
+
+import com.ac.DAO.BookDao;
+import com.ac.bean.Book;
+
+// Class BookService
+public class BookService {
+	public int bookService(int bookId,String bookTitle,float bookPrice) {
+		String grade="";
+		
+		// if Statement 
+		
+		if(bookPrice<=500) {
+			grade="C";		
+		}
+		else if(bookPrice<=1000) {
+			grade="B";
+		}
+		else {
+			grade="A";
+		}
+		
+		//Class BookDao Constructor Calling
+		
+		BookDao bdao=new BookDao();
+		Book b=new Book();
+		
+		// Wrap up all the fields of book class
+		b.setBookId(bookId);
+		b.setBookTitle(bookTitle);
+		b.setBookPrice(bookPrice);
+		b.setGrade(grade);
+		
+		int result=0;
+		
+		// try catch 
+		try {
+			// calling method of BookDao class
+			result=bdao.addBook(b);
+			return result;
+		}
+		catch(Exception e) {
+			System.out.println(e.toString());
+			return 0;
+		}
+		
+	}
+
+}
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+
+BookDao Class---->DAO:
+==================================
+package com.ac.DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import com.ac.bean.Book;
+
+// Class BookDao
+
+public class BookDao {
+	public int addBook(Book book) {
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		
+		try {
+			
+			// Calling BookDb method
+			con=BookDB.getConnection();
+			
+			// Sql query for insert values
+			String inst="insert into books values(?,?,?,?)";
+			
+			//execute statement
+			pstmt=con.prepareStatement(inst);
+			pstmt.setInt(1, book.getBookId());
+			pstmt.setString(2, book.getBookTitle());
+			pstmt.setFloat(3,book.getBookPrice());
+			pstmt.setString(4, book.getGrade());
+			int count=pstmt.executeUpdate();
+		
+			//close Connection
+			con.close();
+			return count;
+			
+		} catch (Exception e1) {
+			System.out.println(e1.toString());
+			return 0;
+		}
+	}
+		
+	
+	// ArrayList Class
+	
+	  public ArrayList getBookDetailsById(int bookId) throws Exception {
+		     
+		  Connection con=null;
+		  PreparedStatement pstmt=null;
+		  ResultSet rs=null;
+		  
+		// Calling BookDb method
+		  con = BookDB.getConnection();
+		  
+		// Sql query to show table
+		  
+		  String sel="select bookTitle,bookPrice from books where bookId=?";
+		  pstmt=con.prepareStatement(sel);
+		  pstmt.setInt(1, bookId);
+		  rs=pstmt.executeQuery();
+		  
+		  //ArrayList Object
+		  
+		  ArrayList arr=new ArrayList();
+		  
+		  // If condition
+		  
+		  if(rs.next()) {
+			  arr.add(rs.getString(1));
+			  arr.add(rs.getString(2));
+		  }
+		  else {
+			  arr.add("Invalid Book Id");
+		  }
+		  return arr;
+		  
+		
+		    
+		
+		
+	}
+		
+		
+}
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+BookDB Class----> DAO:
+=============================
+package com.ac.DAO;
+
+// Import Packages
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+
+//class bookDb
+public class BookDB {
+	public static Connection getConnection() throws SQLException, ClassNotFoundException {
+		
+		//Loading Driver Class
+		String driver="org.postgresql.Driver";
+		Class.forName(driver);
+		
+		//Execute Connection
+		Connection con=DriverManager.getConnection("jdbc:postgresql://localhost/niharika1","postgres","niharika1"+"");
+		return con;
+	}
+
+}
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+BookUI Class----> Ui
+====================================
+
+package com.ac.Ui;
+
+import java.util.Scanner;
+
+import com.ac.service.BookService;
+
+public class BookUI {
+	public static void main(String[] args) {
+		
+		// Initialize the values of book Fields
+		int bookId=0;
+		String bookTitle="";
+		float bookPrice=0;
+		
+		// Scanner calling
+		Scanner sc=new Scanner(System.in);
+		
+		System.out.println("Enter Book Id:");
+		int id=sc.nextInt();
+		System.out.println("Enter Book Title:");
+		String title=sc.next();
+		System.out.println("Enter Book Price:");
+		float price=sc.nextFloat();
+		
+		//BookService Constructor calling 
+		BookService bs=new BookService();
+		
+		int result=bs.bookService(id, title, price);
+		
+		System.out.println("Inserted "+ result+" Successfully..");
+		
+	}
+
+}
