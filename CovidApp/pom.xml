@@ -45,6 +45,6 @@
 		
   </dependencies>
   <build>
-    <finalName>SpringMvcCovidApplication2</finalName>
+    <finalName>CovidApp</finalName>
   </build>
 </project>
